@@ -35,3 +35,68 @@ TODO
 ### Speech Generation
 
 https://github.com/user-attachments/assets/0021acd9-f480-4bc3-904d-831f54c4d45b
+
+
+## Locally
+
+### Build Docker Image
+
+#### For CUDA 12.4 or higher
+
+```bash
+git clone https://github.com/kime541200/speaches-local.git
+cd speaches-local
+
+export CUDA_VERSION=12.4.1 && \
+export UBUNTU_VERSION=22.04
+
+sudo docker build \
+-t speaches-local:cu124 \
+--build-arg CUDA_VERSION=${CUDA_VERSION} \
+--build-arg UBUNTU_VERSION=${UBUNTU_VERSION} \
+-f Dockerfile.cuda124-up .
+```
+
+##### Run Container
+
+```bash
+export MODELS_DIR=/data/models/hf/stt && \
+export PORT=8000
+
+docker run -it \
+--rm \
+--gpus '"device=0"' \
+-p ${PORT}:8000 \
+-v ${MODELS_DIR}:/home/ubuntu/.cache/huggingface/hub \
+--device /dev/snd \
+--name speaches \
+speaches-local:cu124
+```
+
+#### For CUDA 11.4
+```bash
+git clone https://github.com/kime541200/speaches-local.git
+cd speaches-local
+
+export DATE=$(date +%m%d)
+
+sudo docker build \
+-t speaches-local:cu114 \
+-f Dockerfile.cuda114 .
+```
+
+##### Run Container
+
+```bash
+export MODELS_DIR=/data/models/hf/stt && \
+export PORT=8000
+
+docker run -it \
+--rm \
+--gpus '"device=0"' \
+-p ${PORT}:8000 \
+-v ${MODELS_DIR}:/home/ubuntu/.cache/huggingface/hub \
+--device /dev/snd \
+--name speaches \
+speaches-local:cu114
+```
